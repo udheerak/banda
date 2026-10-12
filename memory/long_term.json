@@ -1,0 +1,65 @@
+{
+  "identity": {
+    "language": {
+      "value": "Sinhala",
+      "updated": "2026-10-09"
+    },
+    "system_identity_v3": {
+      "value": "user referred to me as their new self BANDA V3",
+      "updated": "2026-10-10"
+    },
+    "language_sinhala_confirmed": {
+      "value": "yes",
+      "updated": "2026-10-10"
+    }
+  },
+  "preferences": {
+    "active_project": {
+      "value": "designing in Photoshop",
+      "updated": "2026-10-10"
+    }
+  },
+  "projects": {},
+  "relationships": {
+    "user_sister": {
+      "value": "user's sister",
+      "updated": "2026-10-09"
+    },
+    "brother_nickname": {
+      "value": "Nittaewo",
+      "updated": "2026-10-11"
+    }
+  },
+  "wishes": {},
+  "notes": {
+    "last_search": {
+      "value": "Mount Everest information",
+      "updated": "2026-10-09"
+    },
+    "user_perception_of_my_voice": {
+      "value": "user likes current voice and asked for feedback",
+      "updated": "2026-10-10"
+    },
+    "system_identity_v3": {
+      "value": "user referred to me as their new self BANDA V3",
+      "updated": "2026-10-10"
+    },
+    "tea_conversation": {
+      "value": "User jokingly asked to have tea with the assistant",
+      "updated": "2026-10-10"
+    },
+    "curious_about_symbols": {
+      "value": "Asked about national bird and animal",
+      "updated": "2026-10-10"
+    },
+    "heard_user_clearly": {
+      "value": "yes, confirmed audio received",
+      "updated": "2026-10-10"
+    },
+    "hearing_confirmed": {
+      "value": "yes",
+      "updated": "2026-10-10"
+    }
+  },
+  "sessions": []
+}

@@ -1,0 +1,60 @@
+class MainWindow(QMainWindow):
+    _log_sig        = pyqtSignal(str)
+    _state_sig      = pyqtSignal(str)
+    _content_sig    = pyqtSignal(str, str)   # (title, text) — thread-safe content display
+    _reconfig_sig   = pyqtSignal()           # trigger setup overlay from any thread
+    _camera_sig     = pyqtSignal(bytes)      # show camera frame preview (small overlay)
+    _cam_stream_sig = pyqtSignal(bool)       # True=start live stream, False=stop
+    _cam_frame_sig  = pyqtSignal(bytes)      # live camera frame → HUD area
+    _video_open_sig  = pyqtSignal(str, str, bool, str)  # video, title, muted, audio
+    _wake_btns_sig   = pyqtSignal()          # wake state resolved off-thread
+    _video_close_sig = pyqtSignal()
+    _video_mute_sig  = pyqtSignal(bool)
+    _clipboard_sig  = pyqtSignal(str)        # clipboard text changed (thread-safe)
+    _confirm_sig    = pyqtSignal(str, str)   # (title, detail) — irreversible-action gate
+    _confirm_hide_sig = pyqtSignal()
+    _wake_dl_sig    = pyqtSignal(bool, str)  # wake-word install finished (ok, message)
+    _quiz_sig       = pyqtSignal(str, object, object)  # (topic, questions, grader)
+    _quiz_hide_sig  = pyqtSignal()
+    _review_sig     = pyqtSignal(str, str, object, object)  # document review payload
+
+    def __init__(self, face_path: str):
+        super().__init__()
+        self._face_path = face_path
+
+        # Load customization from config
+        _cfg = _read_full_config()
+        self._assistant_name: str = (_cfg.get("assistant_name") or "BANDA ").strip()
+        _display = self._assistant_name.upper()
+
+        # Apply the saved UI colour BEFORE panels/stylesheets are built
+        _ui_color = (_cfg.get("ui_color") or "").strip()
+        if _ui_color and _ui_color.lower() != DEFAULT_UI_COLOR:
+            apply_ui_accent(_ui_color)
+
+        self.setWindowTitle(f"{_display} — {APP_VERSION}")
+        self.setMinimumSize(_MIN_W, _MIN_H)
+        self.resize(_DEFAULT_W, _DEFAULT_H)
+
+        screen = QApplication.primaryScreen().availableGeometry()
+        self.move(
+            (screen.width()  - _DEFAULT_W) // 2,
+            (screen.height() - _DEFAULT_H) // 2,
+        )
+
+        self.on_text_command   = None
+        self.on_remote_clicked = None   # callable: () -> (url, key) | None
+        self.on_interrupt      = None   # callable: () -> None — stop BANDA  mid-speech
+        self.on_voice_change   = None   # callable: () -> None — rebuild session with new voice
+        self.on_audio_device_change = None  # callable: () -> None — reopen audio streams
+        self._confirm_overlay  = None   # live ConfirmBanner, if one is on screen
+        self.get_plugins       = None   # callable: () -> list[dict], set by JarvisLive
+        self.get_plugin_settings = None # callable: () -> list[dict] settings schemas, set by JarvisLive
+        self.on_wake_toggle    = None   # callable: (enable: bool) -> str, set by JarvisLive
+        self.on_wake_manual    = None   # callable: () -> None — manual sleep/wake
+        self.on_push_to_talk   = None   # callable: (enable: bool) -> str scope
+        self.ptt_hold          = None   # callable: (held: bool) -> None — windowed chord
+        self.wake_get_state    = None   # callable: () -> dict {enabled, awake, ready}
+        self._muted            = False
+        self._current_file: str | None = None
+        self._remote_overlay: RemoteKeyOverlay | None = None
